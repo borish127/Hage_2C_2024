@@ -31,66 +31,32 @@
 /*==================[external functions definition]==========================*/
 void app_main(void){
 	uint8_t teclas;
-	bool green=0;
-	bool orange=0;
-	bool red=0;
 	LedsInit();
 	SwitchesInit();
     while(1)    {
     	teclas  = SwitchesRead();
     	switch(teclas){
 			case 0:
-				if(green){
-					LedToggle(LED_1);
-					green=!green;
-				}
-				if(orange){
-					LedToggle(LED_2);
-					orange=!orange;
-				}
-				if(red){
-					LedToggle(LED_3);
-					red=!red;
-				}
+				LedOff(LED_1);
+				LedOff(LED_2);
+				LedOff(LED_3);
 			break;
     		case SWITCH_1:
     			LedToggle(LED_1);
-				green=!green;
-				if(orange){
-					LedToggle(LED_2);
-					orange=!orange;
-				}
-				if(red){
-					LedToggle(LED_3);
-					red=!red;
-				}
+				LedOff(LED_2);
+				LedOff(LED_3);
     		break;
     		case SWITCH_2:
     			LedToggle(LED_2);
-				orange=!orange;
-				if(green){
-					LedToggle(LED_1);
-					green=!green;
-				}
-				if(red){
-					LedToggle(LED_3);
-					red=!red;
-				}
+				LedOff(LED_1);
+				LedOff(LED_3);
     		break;
 			case SWITCH_1|SWITCH_2:
 				LedToggle(LED_3);
-				red=!red;
-				if(orange){
-					LedToggle(LED_2);
-					orange=!orange;
-				}
-				if(green){
-					LedToggle(LED_1);
-					green=!green;
-				}
+				LedOff(LED_1);
+				LedOff(LED_2);
 			break;
     	}
-	    //LedToggle(LED_3);
 		vTaskDelay(CONFIG_BLINK_PERIOD / portTICK_PERIOD_MS);
 	}
 }
