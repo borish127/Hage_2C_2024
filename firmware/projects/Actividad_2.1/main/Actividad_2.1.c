@@ -8,9 +8,12 @@
  *
  * @section hardConn Hardware Connection
  *
- * |    Ultrasonido  |   ESP32   	|
- * |    Pantalla LCD  |   ESP32   	|
- * 
+ * |	EDU-ESP32     |	 PERIFERICO |
+ * |    GPIO_3		  |   ECHO   	|
+ * |    GPIO_2		  |   TRIGGER  	|
+ * |	+5V			  |	  +5V		|
+ * |	GND			  |	  GND		| 
+ * |	J2	Port	| LCD Display	|
  * @section changelog Changelog
  *
  * |   Date	    | Description                                    |
@@ -33,10 +36,12 @@
 #include <gpio_mcu.h>
 #include "hc_sr04.h"
 #include "lcditse0803.h"
+#include "switch.h"
 /*==================[macros and definitions]=================================*/
 
 /*==================[internal data definition]===============================*/
-
+bool active=true;
+bool holding=false;
 /*==================[internal functions declaration]=========================*/
 
 /** @fn read_distance
@@ -104,23 +109,64 @@ void update_leds(uint8_t interval)
 
 /** @fn distance_task
  * @brief Es la tarea encargada de medir la distancia, mostrarla en pantalla y encender los leds
- * @param pvParameter puntero utilizado por el sistema operativo para la administracion de tareas
+ * @param pvParameter Puntero utilizado por el sistema operativo para la administracion de tareas
  */
 void distance_task(void *pvParameter)
 {	
 	uint8_t distance;
 	while(true){	//Se crea un bucle que siempre corre cuando el sistema operativo lo asigna
-		distance=read_distance();	//Lee la distancia
-		update_leds(create_intervals(distance));	//Enciende los leds correspondientes
-		LcdItsE0803Write(distance);	//Muestra la distancia en la pantalla
+		if(active){
+			distance=read_distance();	//Lee la distancia
+			update_leds(create_intervals(distance));	//Enciende los leds correspondientes
+			if(!holding){
+				LcdItsE0803Write(distance);	//Muestra la distancia en la pantalla
+			}
+		}
 		vTaskDelay(1000/portTICK_PERIOD_MS);	//Le entrega el control al sistema operativo por 1 segundo
+	}
+}
+
+/** @fn set_active
+ * @brief Se encarga de leer la tecla 1 y setear el booleano de actividad
+ */
+void set_active()
+{
+	if(SwitchesRead()==SWITCH_1){
+		active=!active;
+		vTaskDelay(150/portTICK_PERIOD_MS);
+	}
+}
+
+/** @fn set_hold
+ * @brief Se encarga de leer la tecla 2 y setear el booleano de refrescar la pantalla
+ */
+void set_hold()
+{
+	if(SwitchesRead()==SWITCH_2){
+		holding=!holding;
+		vTaskDelay(150/portTICK_PERIOD_MS);
+	}
+}
+
+/** @fn switches_task
+ * @brief Es la tarea encargada de leer las teclas y definir si se esta leyendo y/o refrescando la pantalla
+ * @param pvParameter Puntero utilizado por el sistema operativo para la administracion de tareas
+ */
+void shwitches_task(void *pvParameter)
+{
+	while(true){
+		set_active();
+		set_hold();
+		vTaskDelay(10/portTICK_PERIOD_MS);
 	}
 }
 /*==================[external functions definition]==========================*/
 void app_main(void){
 	LedsInit();		//Inicializa los leds
+	SwitchesInit(); //Inicializa las teclas
 	HcSr04Init(GPIO_3,GPIO_2);	//Inicializa el sensor ultrasonido
 	LcdItsE0803Init();	//Inicializa la pantalla LCD
 	xTaskCreate(&distance_task,"Distance", 512, NULL, 5, NULL);	//Crea la tarea de distancia y la empieza a correr
+	xTaskCreate(&shwitches_task,"Swhitches",512,NULL,5,NULL);//Crea la tarea de teclas y la empieza a correr
 }
 /*==================[end of file]============================================*/

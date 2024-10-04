@@ -1,0 +1,8 @@
+Con el osciloscopio se mide el tiempo de pulso generado por el ECHO del sensor ultrasonido.
+
+Ese tiempo en microsegundos, si se lo divide por la escala de factor de conversión a cm que es igual a 59 se obtiene la distancia en cm
+
+Como se observa en la imagen, el tiempo medido es de 930 micro segundos
+930/59=15,7cm
+
+Por alguna razón en el display y en el programa está retornando el valor 14cm, a otros compañeros también les pasó que obtenían una diferencia de 1cm entre lo medido y lo observado, podría deberse a un error en el driver o sino de calibración.
