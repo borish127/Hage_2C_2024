@@ -39,11 +39,19 @@
 #include "timer_mcu.h"
 #include "uart_mcu.h"
 /*==================[macros and definitions]=================================*/
+/**
+ * Periodo de actualización de la interfaz en milisegundos.
+ *
+ * Define el intervalo de tiempo en el que se actualizará la interfaz gráfica.
+ *
+ * @define REFRESH_PERIOD 1000000
+ */
 #define REFRESH_PERIOD 1000000
 /*==================[internal data definition]===============================*/
-TaskHandle_t distance_task_handle = NULL;
-bool active=true;
-bool holding=false;
+
+TaskHandle_t distance_task_handle = NULL; /**<Variable que utiliza el OS para manejar la tarea de distancia */
+bool active=true;	/**<Variable de si está acrivo */
+bool holding=false; /**<Variable de si refresca la pantalla */
 /*==================[internal functions declaration]=========================*/
 
 /** @fn timer_1_finished

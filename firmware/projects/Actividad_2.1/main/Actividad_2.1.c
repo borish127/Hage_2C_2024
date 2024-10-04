@@ -40,8 +40,8 @@
 /*==================[macros and definitions]=================================*/
 
 /*==================[internal data definition]===============================*/
-bool active=true;
-bool holding=false;
+bool active=true; /**<Variable de si está activo*/
+bool holding=false; /**<Variable de si refresca la pantalla*/
 /*==================[internal functions declaration]=========================*/
 
 /** @fn read_distance
