@@ -50,6 +50,15 @@
         },
         {
             "path": "projects/Actividad_2.4"
+        },
+        {
+            "path": "projects/Automatic_Trash"
+        },
+        {
+            "path": "projects/Balanza"
+        },
+        {
+            "path": "projects/examen"
         }
     ],
     "settings": {
@@ -105,7 +114,11 @@
             "soc_caps.h": "c",
             "mpu6050.h": "c",
             "i2c_mcu.h": "c",
-            "pwm_mcu.h": "c"
+            "pwm_mcu.h": "c",
+            "buzzer.h": "c",
+            "hx711.h": "c",
+            "cstdint": "c",
+            "type_traits": "c"
         },
     },
     "tasks": {
